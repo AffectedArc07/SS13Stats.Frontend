@@ -26,7 +26,7 @@ namespace SS13Stats.Frontend.Controllers {
             // Now we do ordering stuff
             List<Snapshot> latest_snaps = new List<Snapshot>();
             foreach(Server S in servers) {
-                latest_snaps.Add(_dbc.Snapshots.Where(s => s.Server == S).OrderByDescending(s => s.PlayerCount).First());
+                latest_snaps.Add(_dbc.Snapshots.Where(s => s.Server == S).OrderByDescending(s => s.SnapshotTime).First());
             }
             latest_snaps = latest_snaps.OrderByDescending(s => s.PlayerCount).ToList();
             slm.servers = latest_snaps;
