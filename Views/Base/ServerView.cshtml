@@ -1,0 +1,71 @@
+﻿@using SS13Stats.Frontend.Models;
+@model SS13Stats.Frontend.Models.ServerViewModel;
+@{
+    ViewData["Title"] = @Model.server.ServerName;
+}
+<h4><code>#@Model.server.Id</code></h4>
+<h2 class="text-white" style="font-weight: 300">@Model.server.ServerName</h2>
+
+<hr class="bg-white" />
+<h4 class="text-white">Past 24 hours</h4>
+<div style="width: 100%;" id="24h_chart"></div>
+
+<hr class="bg-white" />
+<h4 class="text-white">Past week</h4>
+<div style="width: 100%;" id="7d_chart"></div>
+
+<hr class="bg-white" />
+<h4 class="text-white">Daily averages</h4>
+<code>TODO</code>
+
+<span style="display: none" id="24h_json">@Model.day_snapshots_json</span>
+<span style="display: none" id="7d_json">@Model.week_snapshots_json</span>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
+        // Define some stuff
+        var chartTextStyle = { color: '#FFF' };
+        var options = { title: "", legend: 'none', colors: ['#4287f5'], backgroundColor: { fill: 'transparent' }, titleTextStyle: { color: '#FFFFFF' }, height: "400", hAxis: { textStyle: chartTextStyle, titleTextStyle: chartTextStyle }, vAxis: { textStyle: chartTextStyle, titleTextStyle: chartTextStyle, gridlines: { color: '#787878' }, minValue: 0 }, chartArea: { 'width': '90%', 'height': '90%' }, };
+
+
+        // Get the 24h history
+        var raw_json_24h = JSON.parse(document.getElementById("24h_json").innerHTML);
+        // Time to rip it apart and do shit
+        let my_data_24h = [];
+        my_data_24h.push(["Timestamp", "Players"]);
+        raw_json_24h.forEach(e => {
+            my_data_24h.push([e["Key"], e["Value"]]);
+        })
+
+        var data_24h = google.visualization.arrayToDataTable(my_data_24h);
+
+        // Get the 7d history
+        var raw_json_7d = JSON.parse(document.getElementById("7d_json").innerHTML);
+        // Time to rip it apart and do shit
+        let my_data_7d = [];
+        my_data_7d.push(["Timestamp", "Players"]);
+        raw_json_7d.forEach(e => {
+            my_data_7d.push([e["Key"], e["Value"]]);
+        })
+
+        var data_7d = google.visualization.arrayToDataTable(my_data_7d);
+        
+
+
+        var chart_24h = new google.visualization.LineChart(document.getElementById('24h_chart'));
+        var chart_7d = new google.visualization.LineChart(document.getElementById('7d_chart'));
+
+        chart_24h.draw(data_24h, options);
+        chart_7d.draw(data_7d, options);
+    }
+</script>
