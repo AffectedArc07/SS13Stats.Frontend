@@ -25,7 +25,7 @@ namespace SS13Stats.Frontend.Controllers {
         [Route("")]
         public IActionResult Index() {
             ServerListModel slm = new ServerListModel();
-            List<Server> servers = _dbc.Servers.Where(s => s.LastSeen > DateTime.Now.AddDays(-7)).ToList();
+            List<Server> servers = _dbc.Servers.Where(s => s.LastSeen > DateTime.Now.AddDays(-1)).ToList();
             // Now we do ordering stuff
             List<Snapshot> latest_snaps = new List<Snapshot>();
             foreach(Server S in servers) {
